@@ -35,7 +35,7 @@ get the number of decimals from the asset contract( dai, usdc, etc)
    factor in price of VISR and x 12 for 1 year(APY)
    For VISR-ETH APY we will do something special later on
 
-> Price of Visor(or any other token) can be pulled from Uniswap pseudocode as follows
+Price of Visor(or any other token) can be pulled from Uniswap pseudocode as follows
 
     // create uniswap factory instance
     uniFactory = new web3.eth.Contract(uniswapV2FactoryABI, uniswapV2FactoryAddress)
@@ -91,7 +91,7 @@ get the number of decimals from the asset contract( dai, usdc, etc)
  [Description to come]
 
 
-> Mainnet addresses
+#### Mainnet addresses
 
 
   Visor:[[0x08FB62c84909dA3Aa5F59E01763E5FDC62De76e9](https://etherscan.io/address/0x08FB62c84909dA3Aa5F59E01763E5FDC62De76e9#code)
