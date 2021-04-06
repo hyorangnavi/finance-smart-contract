@@ -14,26 +14,32 @@ Our VisorFactory contract contains info relevant to this task, as do our rewards
 
 Mockup charts can be seen by running `npm install` and `npm run serve`. Below are descriptions of what each chart is to convey. Some of the information will need to be informed by historical price data which we do not have.
 
-We will also require script to pull price data periodically from Uniswap. More description to come.
+We will also require script to pull price data periodically from Uniswap. 
+We will also require script to pull asset balances periodically from each Visor contract.
+These values must be pulled from static json files from the webapp.
+Any other values must be pulled in realtime from relevant contract during webapp runtime.
+More description below.
 
 
 
-#### Meter chart
+#### Meter chart ( APY CALCULATION)
 
 We wish to display **asset name** (DAI, USDC, USDT, VISR-ETH) and **APY**
 
 
-To calculate APY, we relie on a reference account which has staked 10 tokens to each respective hypervisor
+To calculate APY, we relie on a reference account which has staked 10 tokens to each respective hypervisor rewards contracts.
     Assuming you are working with a hypervisor contract instance, one could pull rewards for end of April as follows
 
     hypervisor.getFutureVaultReward("0x675ACde86DffE354e175E7dCb95E71f9902477D7",1619354994)
+    
+0x675ACde86DffE354e175E7dCb95E71f9902477D7 is the reference account and 1619354994 is around the end of April.
+This will return the number of VISR tokens rewarded by the end of April.
 
 get the number of decimals from the asset contract( dai, usdc, etc)
 
     asset.decimals()
 
-   factor in price of VISR and x 12 for 1 year(APY)
-   For VISR-ETH APY we will do something special later on
+factor in price of VISR and x 12 for 1 year(APY).
 
 Price of Visor(or any other token) can be pulled from Uniswap pseudocode as follows
 
@@ -51,40 +57,43 @@ Price of Visor(or any other token) can be pulled from Uniswap pseudocode as foll
     price = reserves['_reserve0']/reserves['_reserve1']
 
 
- ##### Filling in the bars
-  Filled in vs unfulled portion of meter chart should represent historical highest APY of that asset in relation to the highest APY offered at the moment
-   [Description to come]
+We would like a nodejs script which we can run in crontab to calculate APY for each Hypervisor based on above calculation.
+It should use filesystem io to open a historical_apy.json file which contains json
+    [{"apy":92, "timestamp": 1619354994}, {"apy":...]
+append a new `[{"apy":92, "timestamp": 1619354994}` to the json and write to the file.
 
+We can use this infura account fc118b097c7944e1ba44a1d21684536f 'https://mainnet.infura.io/v3/fc118b097c7944e1ba44a1d21684536f', the Uniswap Factory artifact included in this repo and the Uniswap Factory address included at bottom of this readme.
+
+ ##### Filling in the bars
+ Filled in vs unfulled portion of meter chart should represent historical highest APY of that asset in relation to the highest APY offered at the moment
+ 
+ We would like to use the historal_apy.json for this purpose.
 
 
 #### Gauge Chart
 
 ##### Total Active Visors
-  Fraction of visors with non-negative balances of each asset
- [Description to come]
+  Fraction of visors with non-zero balances of each asset
+  
+  We can utilize VisorFactory.instanceCount and VisorFactory.instanceAt to retrieve addresses of all available visors.
+  We would like a nodejs script which we can run in crontab to pull this data for each Visor, for each asset ( USDT, USDC, DAI, VISR-ETH) and save to a json file in same manner as APY calculation.
 
 ##### Total Minted Visors
-  Total minted nfts available from VisorFactory's nft interfacce ( see etherscan)
-  VisorFactory also emits events on minting
-   [Description to come]
+  We can utilize VisorFactory.instanceCount 
 
 ##### Percentage = (Total Active Visors/Total Minted Visors)
- [Description to come]
-
+   Total Active Visors versus Total Minted Visors
 
 ##### Total Active Visors
- [Description to come]
-
+   All Visors with non-zero balance
 
 #### Donut
 ##### Amount of assets in each Pool
-  7th return value of hypervisor.getHypervisorData ( see etherscan)
- [Description to come]
+  7th return value of hypervisor.getHypervisorData
 
 ##### Total Locked Value in all pools
   translate to $-values
- [Description to come]
-
+  Use Uniswap prices as needed
 
 #### Stacked Area
 ##### Historical Asset APY (timing each daily average)
