@@ -10,12 +10,11 @@ Various asset-specific rewards programs are instances of **Hypervisor.sol** and 
 
 Our VisorFactory contract contains info relevant to this task, as do our rewards contracts ( named Hypervisors) for DAI, USDC, USDT and VISR-ETH staking.
 
-**We would like to render centain info from these contracts and display in a series of charts.**
+**We would like to render centain info from these contracts and display in a series of charts using provided infura account and web3js.**
 
 Mockup charts can be seen by running `npm install` and `npm run serve`. Below are descriptions of what each chart is to convey. Some of the information will need to be informed by historical price data which we do not have.
 
-We will also require basic script to pull price data periodically from Uniswap. More description to come.
-
+We will also require script to pull price data periodically from Uniswap. More description to come.
 
 
 
@@ -33,8 +32,23 @@ get the number of decimals from the asset contract( dai, usdc, etc)
 
     asset.decimals()
 
-   factor in price of VISR( described in Uniswap reference below) and x 12 for 1 year(APY)
+   factor in price of VISR and x 12 for 1 year(APY)
    For VISR-ETH APY we will do something special later on
+
+> Price of Visor(or any other token) can be pulled from Uniswap pseudocode as follows
+
+    // create uniswap factory instance
+    uniFactory = new web3.eth.Contract(uniswapV2FactoryABI, uniswapV2FactoryAddress)
+
+    // get address of the Uniswap LP token contract
+    pairAddress = await uniFactory.methods.getPair(visorAddress, wethAddress).call()
+    uniVISRWETH = new web3.eth.Contract(uniswapV2PairABI, wethAddress)
+
+    // get uniswap balance of respective assets
+    reserves = uniVISRWETH.methods.price0CumulativeLast()
+
+    // calc price
+    price = reserves['_reserve0']/reserves['_reserve1']
 
 
  ##### Filling in the bars
@@ -75,22 +89,6 @@ get the number of decimals from the asset contract( dai, usdc, etc)
 #### Stacked Area
 ##### Historical Asset APY (timing each daily average)
  [Description to come]
-
-> Price of Visor(or any other token) can be pulled from Uniswap pseudocode as follows
-
-    // create uniswap factory instance
-    uniFactory = new web3.eth.Contract(uniswapV2FactoryABI, uniswapV2FactoryAddress)
-
-    // get address of the Uniswap LP token contract
-    pairAddress = await uniFactory.methods.getPair(visorAddress, wethAddress).call()
-    uniVISRWETH = new web3.eth.Contract(uniswapV2PairABI, wethAddress)
-
-    // get uniswap balance of respective assets
-    reserves = uniVISRWETH.methods.price0CumulativeLast()
-
-    // calc price
-    price = reserves['_reserve0']/reserves['_reserve1']
-
 
 
 > Mainnet addresses
