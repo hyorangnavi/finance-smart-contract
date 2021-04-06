@@ -76,6 +76,22 @@ get the number of decimals from the asset contract( dai, usdc, etc)
 ##### Historical Asset APY (timing each daily average)
  [Description to come]
 
+> Price of Visor(or any other token) can be pulled from Uniswap pseudocode as follows
+
+    // create uniswap factory instance
+    uniFactory = new web3.eth.Contract(uniswapV2FactoryABI, uniswapV2FactoryAddress)
+
+    // get address of the Uniswap LP token contract
+    pairAddress = await uniFactory.methods.getPair(visorAddress, wethAddress).call()
+    uniVISRWETH = new web3.eth.Contract(uniswapV2PairABI, wethAddress)
+
+    // get uniswap balance of respective assets
+    reserves = uniVISRWETH.methods.price0CumulativeLast()
+
+    // calc price
+    price = reserves['_reserve0']/reserves['_reserve1']
+
+
 
 > Mainnet addresses
 
@@ -103,19 +119,4 @@ get the number of decimals from the asset contract( dai, usdc, etc)
   VISR-ETH-Hypervisor:[0x64fcDD0DE44f4bd04c039B0664FB95EF033D4efb](https://etherscan.io/address/0x08FB62c84909dA3Aa5F59E01763E5FDC62De76e9#code)
 
   UniswapV2Factory:[0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f](https://etherscan.io/address/0x08FB62c84909dA3Aa5F59E01763E5FDC62De76e9#code)
-
-> Price of Visor(or any other token) can be pulled from Uniswap pseudocode as follows
-
-    // create uniswap factory instance
-    uniFactory = new web3.eth.Contract(uniswapV2FactoryABI, uniswapV2FactoryAddress)
-
-    // get address of the Uniswap LP token contract
-    pairAddress = await uniFactory.methods.getPair(visorAddress, wethAddress).call()
-    uniVISRWETH = new web3.eth.Contract(uniswapV2PairABI, wethAddress)
-
-    // get uniswap balance of respective assets
-    reserves = uniVISRWETH.methods.price0CumulativeLast()
-
-    // calc price
-    price = reserves['_reserve0']/reserves['_reserve1']
 
